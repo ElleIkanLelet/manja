@@ -1,0 +1,2 @@
+# manja
+mandiri dan juara
