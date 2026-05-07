@@ -144,12 +144,24 @@ public class Tampilan extends SurfaceView implements Runnable {
     private void perbarui() {
         Point kepala = new Point(ular.get(0));
 
+        // Menerjemahkan arah swipe menjadi angka untuk diolah C++
+        float inputX = 0;
+        float inputY = 0;
+
         switch (arahSaatIni) {
-            case ATAS: kepala.y--; break;
-            case BAWAH: kepala.y++; break;
-            case KIRI: kepala.x--; break;
-            case KANAN: kepala.x++; break;
+            case ATAS: inputY = -1; break;
+            case BAWAH: inputY = 1; break;
+            case KIRI: inputX = -1; break;
+            case KANAN: inputX = 1; break;
         }
+
+        // --- MENGGUNAKAN MESIN C++ UNTUK MENGHITUNG PERGERAKAN ---
+        Utama aktivitasUtama = (Utama) getContext();
+        float[] posisiBaru = aktivitasUtama.updateLogikaUlar(inputX, inputY, 1.0f);
+
+        kepala.x += Math.round(posisiBaru[0]);
+        kepala.y += Math.round(posisiBaru[1]);
+        // ---------------------------------------------------------
 
         if (kepala.x < 0 || kepala.x >= JUMLAH_BLOK_LEBAR || kepala.y < 0 || kepala.y >= jumlahBlokTinggi) {
             akhiriPermainan();

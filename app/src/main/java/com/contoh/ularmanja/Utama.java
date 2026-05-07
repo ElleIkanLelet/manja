@@ -1,10 +1,17 @@
 package com.contoh.ularmanja;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
 public class Utama extends Activity {
+
+    static {
+        System.loadLibrary("native-lib");
+    }
+
+    public native float[] updateLogikaUlar(float inputX, float inputY, float speed);
 
     private Tampilan tampilanGame;
 
