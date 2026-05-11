@@ -12,6 +12,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import java.util.ArrayList;
 import java.util.Random;
+import android.widget.TextView;
 
 public class Tampilan extends SurfaceView implements Runnable {
 
@@ -49,10 +50,13 @@ public class Tampilan extends SurfaceView implements Runnable {
     private float sentuhX, sentuhY;
     private SharedPreferences dataSimpanan;
     private SoundPool efekSuara;
+    private TextView teksSkor;
     private int idSuaraMakan, idSuaraTabrak;
 
-    public Tampilan(Context konteks) {
+    public Tampilan(Context konteks, TextView scoreView) {
         super(konteks);
+        this.teksSkor = scoreView;
+        setZOrderOnTop(false);
         wadahPermukaan = getHolder();
         kuas = new Paint();
         ular = new ArrayList<>();
@@ -186,6 +190,9 @@ public class Tampilan extends SurfaceView implements Runnable {
 
         if (kepala.equals(makanan)) {
             skor += 10;
+            teksSkor.post(() -> {
+                teksSkor.setText("SCORE : " + skor);
+            });
             efekSuara.play(idSuaraMakan, 1, 1, 0, 0, 1);
             munculkanMakanan();
             if (new Random().nextInt(10) > 7 && !makananBesarAktif) {
@@ -194,6 +201,9 @@ public class Tampilan extends SurfaceView implements Runnable {
             if (tunda > 60) tunda -= 3;
         } else if (makananBesarAktif && kepala.equals(makananBesar)) {
             skor += 30;
+            teksSkor.post(() -> {
+                teksSkor.setText("SCORE : " + skor);
+            });
             efekSuara.play(idSuaraMakan, 1, 1, 0, 0, 1);
             makananBesarAktif = false;
             ular.add(new Point(ular.get(ular.size() - 1)));
@@ -209,20 +219,28 @@ public class Tampilan extends SurfaceView implements Runnable {
     }
 
     private void akhiriPermainan() {
+
         efekSuara.play(idSuaraTabrak, 1, 1, 0, 0, 1);
-        statusSekarang = Status.KALAH;
-        if (skor > skorTertinggi) {
-            skorTertinggi = skor;
-            SharedPreferences.Editor editor = dataSimpanan.edit();
-            editor.putInt("tinggi", skorTertinggi);
-            editor.apply();
-        }
+
+        android.content.Intent intent =
+                new android.content.Intent(getContext(), GameOver.class);
+
+        getContext().startActivity(intent);
     }
 
     private void gambar() {
         if (wadahPermukaan.getSurface().isValid()) {
             kanvas = wadahPermukaan.lockCanvas();
-            kanvas.drawColor(Color.parseColor("#1A1A1A"));
+            kanvas.drawColor(Color.parseColor("#050505"));
+            kuas.setColor(Color.parseColor("#112211"));
+
+            for (int x = 0; x < layarX; x += ukuranBlok) {
+                kanvas.drawLine(x, 0, x, layarY, kuas);
+            }
+
+            for (int y = 0; y < layarY; y += ukuranBlok) {
+                kanvas.drawLine(0, y, layarX, y, kuas);
+            }
 
             if (statusSekarang == Status.BERMAIN) {
                 kuas.setColor(Color.DKGRAY);
@@ -231,13 +249,27 @@ public class Tampilan extends SurfaceView implements Runnable {
                             (p.x * ukuranBlok) + ukuranBlok, (p.y * ukuranBlok) + ukuranBlok, kuas);
                 }
 
-                kuas.setColor(Color.GREEN);
-                for (Point p : ular) {
-                    kanvas.drawRect(p.x * ukuranBlok, p.y * ukuranBlok,
-                            (p.x * ukuranBlok) + ukuranBlok, (p.y * ukuranBlok) + ukuranBlok, kuas);
+                kuas.setColor(Color.parseColor("#00FF66"));
+                for (int i = 0; i < ular.size(); i++) {
+
+                    Point p = ular.get(i);
+
+                    if (i == 0) {
+                        kuas.setColor(Color.parseColor("#D4FF00"));
+                    } else {
+                        kuas.setColor(Color.parseColor("#00FF66"));
+                    }
+
+                    kanvas.drawRect(
+                            p.x * ukuranBlok,
+                            p.y * ukuranBlok,
+                            (p.x * ukuranBlok) + ukuranBlok,
+                            (p.y * ukuranBlok) + ukuranBlok,
+                            kuas
+                    );
                 }
 
-                kuas.setColor(Color.RED);
+                kuas.setColor(Color.parseColor("#FFD000"));
                 kanvas.drawRect(makanan.x * ukuranBlok, makanan.y * ukuranBlok,
                         (makanan.x * ukuranBlok) + ukuranBlok, (makanan.y * ukuranBlok) + ukuranBlok, kuas);
 
@@ -247,26 +279,53 @@ public class Tampilan extends SurfaceView implements Runnable {
                             (makananBesar.y * ukuranBlok) + (ukuranBlok / 2), ukuranBlok / 2, kuas);
                 }
 
-                kuas.setColor(Color.WHITE);
-                kuas.setTextSize(60);
-                kanvas.drawText("Skor: " + skor, 40, 80, kuas);
+                kuas.setColor(Color.parseColor("#00FF66"));
+                kuas.setTextSize(65);
+                kuas.setFakeBoldText(true);
 
-            } else if (statusSekarang == Status.MENU) {
-                kuas.setColor(Color.WHITE);
-                kuas.setTextSize(120);
-                kanvas.drawText("GAME ULAR", layarX / 5, layarY / 3, kuas);
-                kuas.setTextSize(60);
-                kanvas.drawText("Ketuk untuk Bermain", layarX / 4, layarY / 2, kuas);
-                kanvas.drawText("Skor Tertinggi: " + skorTertinggi, layarX / 4, layarY / 2 + 150, kuas);
+                // kanvas.drawText("SKOR : " + skor, 40, 80, kuas);
 
-            } else {
-                kuas.setColor(Color.RED);
-                kuas.setTextSize(120);
-                kanvas.drawText("KALAH!", layarX / 3, layarY / 3, kuas);
+            } /* else if (statusSekarang == Status.MENU) {
+                kuas.setColor(Color.parseColor("#D4FF00"));
+                kuas.setTextSize(130);
+                kuas.setFakeBoldText(true);
+
+                kanvas.drawText("SNAKE.EXE", layarX / 6, layarY / 3, kuas);
+
+                kuas.setColor(Color.parseColor("#00FF66"));
+                kuas.setTextSize(55);
+
+                kanvas.drawText("TAP TO START", layarX / 4, layarY / 2, kuas);
+
+                kuas.setColor(Color.parseColor("#FFD000"));
+
+                kanvas.drawText("HIGH SCORE : " + skorTertinggi,
+                        layarX / 5,
+                        layarY / 2 + 140,
+                        kuas);
+
+            }*/ else {
+
+                kuas.setColor(Color.parseColor("#FF4444"));
+                kuas.setTextSize(130);
+                kuas.setFakeBoldText(true);
+
+                kanvas.drawText("GAME OVER", layarX / 8, layarY / 3, kuas);
+
                 kuas.setColor(Color.WHITE);
                 kuas.setTextSize(60);
-                kanvas.drawText("Skor Akhir: " + skor, layarX / 3, layarY / 2, kuas);
-                kanvas.drawText("Ketuk untuk Mengulang", layarX / 5, layarY / 2 + 150, kuas);
+
+                kanvas.drawText("FINAL SCORE : " + skor,
+                        layarX / 4,
+                        layarY / 2,
+                        kuas);
+
+                kuas.setColor(Color.parseColor("#00FF66"));
+
+                kanvas.drawText("TAP TO RESTART",
+                        layarX / 5,
+                        layarY / 2 + 150,
+                        kuas);
             }
 
             wadahPermukaan.unlockCanvasAndPost(kanvas);
@@ -304,5 +363,16 @@ public class Tampilan extends SurfaceView implements Runnable {
                 break;
         }
         return true;
+    }
+    public void mulaiGame() {
+        mulaiPermainan();
+    }
+
+    public void pauseGame() {
+        statusSekarang = Status.MENU;
+    }
+
+    public void restartGame() {
+        mulaiPermainan();
     }
 }

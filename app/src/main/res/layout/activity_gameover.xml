@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Background -->
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/gameover"/>
+
+    <!-- Tombol ULANGI -->
+
+    <Button
+        android:id="@+id/btnUlangi"
+        android:layout_width="140dp"
+        android:layout_height="55dp"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="380dp"
+        android:background="@android:color/transparent"
+        android:text=""/>
+
+    <!-- Tombol KELUAR -->
+
+    <Button
+        android:id="@+id/btnKeluar"
+        android:layout_width="140dp"
+        android:layout_height="55dp"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="470dp"
+        android:background="@android:color/transparent"
+        android:text=""/>
+
+</FrameLayout>
