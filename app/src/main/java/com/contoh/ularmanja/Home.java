@@ -9,6 +9,7 @@ public class Home extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        # Fungsi Instance
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home2);
 
