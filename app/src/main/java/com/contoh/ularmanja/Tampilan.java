@@ -1,10 +1,7 @@
 package com.contoh.ularmanja;
 import android.content.Context;
 import android.content.SharedPreferences;
-<<<<<<< HEAD
 import android.graphics.Bitmap;
-=======
->>>>>>> bcde57bf3a919658eb4b01e842f94772eb3ebd3f
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -17,11 +14,9 @@ import android.view.SurfaceView;
 import java.util.ArrayList;
 import java.util.Random;
 import android.widget.TextView;
-<<<<<<< HEAD
 import android.graphics.BitmapFactory;
 
-=======
->>>>>>> bcde57bf3a919658eb4b01e842f94772eb3ebd3f
+
 
 public class Tampilan extends SurfaceView implements Runnable {
 
@@ -34,10 +29,6 @@ public class Tampilan extends SurfaceView implements Runnable {
     private int layarX, layarY;
     private int ukuranBlok;
     private final int JUMLAH_BLOK_LEBAR = 20;
-<<<<<<< HEAD
-
-=======
->>>>>>> bcde57bf3a919658eb4b01e842f94772eb3ebd3f
     private int jumlahBlokTinggi;
 
     private ArrayList<Point> ular;
@@ -45,10 +36,6 @@ public class Tampilan extends SurfaceView implements Runnable {
     private Point makananBesar;
     private ArrayList<Point> rintangan;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> bcde57bf3a919658eb4b01e842f94772eb3ebd3f
     private enum Arah {ATAS, BAWAH, KIRI, KANAN}
     private Arah arahSaatIni = Arah.KANAN;
 
@@ -69,12 +56,9 @@ public class Tampilan extends SurfaceView implements Runnable {
     private SoundPool efekSuara;
     private TextView teksSkor;
     private int idSuaraMakan, idSuaraTabrak;
-<<<<<<< HEAD
     private Bitmap bitmapBatu;
     private Bitmap bitmapKepalaAtas, bitmapKepalaBawah, bitmapKepalaKiri, bitmapKepalaKanan;
     private Bitmap bitmapBadan, bitmapEkor;
-=======
->>>>>>> bcde57bf3a919658eb4b01e842f94772eb3ebd3f
 
     public Tampilan(Context konteks, TextView scoreView) {
         super(konteks);
@@ -99,7 +83,7 @@ public class Tampilan extends SurfaceView implements Runnable {
 
         idSuaraMakan = efekSuara.load(konteks, getResources().getIdentifier("makan", "raw", konteks.getPackageName()), 1);
         idSuaraTabrak = efekSuara.load(konteks, getResources().getIdentifier("tabrak", "raw", konteks.getPackageName()), 1);
-<<<<<<< HEAD
+
         bitmapBatu = BitmapFactory.decodeResource(getResources(), R.drawable.batu_rintangan);
         bitmapKepalaAtas = BitmapFactory.decodeResource(getResources(), R.drawable.ular_kepala_atas);
         bitmapKepalaBawah = BitmapFactory.decodeResource(getResources(), R.drawable.ular_kepala_bawah);
@@ -107,8 +91,7 @@ public class Tampilan extends SurfaceView implements Runnable {
         bitmapKepalaKanan = BitmapFactory.decodeResource(getResources(), R.drawable.ular_kepala_kanan);
         bitmapBadan = BitmapFactory.decodeResource(getResources(), R.drawable.ular_badan);
         bitmapEkor = BitmapFactory.decodeResource(getResources(), R.drawable.ular_ekor);
-=======
->>>>>>> bcde57bf3a919658eb4b01e842f94772eb3ebd3f
+
     }
 
     public void lanjutkan() {
@@ -278,18 +261,17 @@ public class Tampilan extends SurfaceView implements Runnable {
             if (statusSekarang == Status.BERMAIN) {
                 kuas.setColor(Color.DKGRAY);
                 for (Point p : rintangan) {
-<<<<<<< HEAD
+
                     Bitmap batuResize = Bitmap.createScaledBitmap(bitmapBatu, ukuranBlok, ukuranBlok, false);
                     kanvas.drawBitmap(batuResize, p.x * ukuranBlok, p.y * ukuranBlok, null);
-=======
                     kanvas.drawRect(p.x * ukuranBlok, p.y * ukuranBlok,
                             (p.x * ukuranBlok) + ukuranBlok, (p.y * ukuranBlok) + ukuranBlok, kuas);
->>>>>>> bcde57bf3a919658eb4b01e842f94772eb3ebd3f
+
                 }
 
                 kuas.setColor(Color.parseColor("#00FF66"));
                 for (int i = 0; i < ular.size(); i++) {
-<<<<<<< HEAD
+
                     Point p = ular.get(i);
                     Bitmap ularResize;
 
@@ -312,7 +294,7 @@ public class Tampilan extends SurfaceView implements Runnable {
 
                     // Gambar ke kanvas
                     kanvas.drawBitmap(ularResize, p.x * ukuranBlok, p.y * ukuranBlok, null);
-=======
+
 
                     Point p = ular.get(i);
 
@@ -329,7 +311,6 @@ public class Tampilan extends SurfaceView implements Runnable {
                             (p.y * ukuranBlok) + ukuranBlok,
                             kuas
                     );
->>>>>>> bcde57bf3a919658eb4b01e842f94772eb3ebd3f
                 }
 
                 kuas.setColor(Color.parseColor("#FFD000"));

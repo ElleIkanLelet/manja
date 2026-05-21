@@ -9,11 +9,9 @@ public class Home extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-<<<<<<< HEAD
         //Fungsi Instance
-=======
-        # Fungsi Instance
->>>>>>> bcde57bf3a919658eb4b01e842f94772eb3ebd3f
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home2);
 
