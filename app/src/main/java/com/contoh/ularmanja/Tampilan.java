@@ -58,6 +58,7 @@ public class Tampilan extends SurfaceView implements Runnable {
     private Bitmap bitmapBatu;
     private Bitmap bitmapKepalaAtas, bitmapKepalaBawah, bitmapKepalaKiri, bitmapKepalaKanan;
     private Bitmap bitmapBadan, bitmapEkor;
+    private Bitmap bitmapApelMerah, bitmapApelEmas;
 
     public Tampilan(Context konteks, TextView scoreView) {
         super(konteks);
@@ -90,6 +91,8 @@ public class Tampilan extends SurfaceView implements Runnable {
         bitmapKepalaKanan = BitmapFactory.decodeResource(getResources(), R.drawable.ular_kepala_kanan);
         bitmapBadan = BitmapFactory.decodeResource(getResources(), R.drawable.ular_badan);
         bitmapEkor = BitmapFactory.decodeResource(getResources(), R.drawable.ular_ekor);
+        bitmapApelMerah = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.apel_merah), 50, 50, true);
+        bitmapApelEmas = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.apel_emas), 50, 50, true);
     }
 
     public void lanjutkan() {
@@ -276,14 +279,15 @@ public class Tampilan extends SurfaceView implements Runnable {
                     kanvas.drawBitmap(ularResize, p.x * ukuranBlok, p.y * ukuranBlok, null);
                 }
 
-                kuas.setColor(Color.parseColor("#FFD000"));
-                kanvas.drawRect(makanan.x * ukuranBlok, makanan.y * ukuranBlok,
-                        (makanan.x * ukuranBlok) + ukuranBlok, (makanan.y * ukuranBlok) + ukuranBlok, kuas);
+                // Ganti baris 282-284 dengan ini:
+                // Baris 282: Menggambar Apel Merah
+                // Baris 284
+                // Baris 282: Menggambar Apel Merah
+                kanvas.drawBitmap(bitmapApelMerah, makanan.x * ukuranBlok, makanan.y * ukuranBlok, null);
 
+                // Baris 283: Menggambar Apel Emas (Hanya jika aktif)
                 if (makananBesarAktif) {
-                    kuas.setColor(Color.YELLOW);
-                    kanvas.drawCircle((makananBesar.x * ukuranBlok) + (ukuranBlok / 2),
-                            (makananBesar.y * ukuranBlok) + (ukuranBlok / 2), ukuranBlok / 2, kuas);
+                    kanvas.drawBitmap(bitmapApelEmas, makananBesar.x * ukuranBlok, makananBesar.y * ukuranBlok, null);
                 }
 
             } else {
