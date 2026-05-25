@@ -279,13 +279,9 @@ public class Tampilan extends SurfaceView implements Runnable {
                     kanvas.drawBitmap(ularResize, p.x * ukuranBlok, p.y * ukuranBlok, null);
                 }
 
-                // Ganti baris 282-284 dengan ini:
-                // Baris 282: Menggambar Apel Merah
-                // Baris 284
-                // Baris 282: Menggambar Apel Merah
+               
                 kanvas.drawBitmap(bitmapApelMerah, makanan.x * ukuranBlok, makanan.y * ukuranBlok, null);
 
-                // Baris 283: Menggambar Apel Emas (Hanya jika aktif)
                 if (makananBesarAktif) {
                     kanvas.drawBitmap(bitmapApelEmas, makananBesar.x * ukuranBlok, makananBesar.y * ukuranBlok, null);
                 }
