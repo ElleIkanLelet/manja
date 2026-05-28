@@ -233,8 +233,15 @@ public class Tampilan extends SurfaceView implements Runnable {
     }
 
     private void akhiriPermainan() {
+
         efekSuara.play(idSuaraTabrak, 1, 1, 0, 0, 1);
-        android.content.Intent intent = new android.content.Intent(getContext(), GameOver.class);
+
+        android.content.Intent intent =
+                new android.content.Intent(getContext(), GameOver.class);
+
+        // Kirim skor ke GameOver
+        intent.putExtra("score", skor);
+
         getContext().startActivity(intent);
     }
 
@@ -315,12 +322,15 @@ public class Tampilan extends SurfaceView implements Runnable {
     public boolean onTouchEvent(MotionEvent peristiwa) {
         switch (peristiwa.getAction()) {
             case MotionEvent.ACTION_DOWN:
+
                 if (statusSekarang != Status.BERMAIN) {
                     mulaiPermainan();
                 }
+
                 sentuhX = peristiwa.getX();
                 sentuhY = peristiwa.getY();
                 break;
+
             case MotionEvent.ACTION_UP:
                 float selisihX = peristiwa.getX() - sentuhX;
                 float selisihY = peristiwa.getY() - sentuhY;

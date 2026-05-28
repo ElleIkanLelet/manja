@@ -39,13 +39,8 @@ public class Utama extends Activity {
 
         gameContainer.addView(tampilanGame);
 
-        Button startButton = findViewById(R.id.startButton);
         Button pauseButton = findViewById(R.id.pauseButton);
         Button restartButton = findViewById(R.id.restartButton);
-
-        startButton.setOnClickListener(v -> {
-            tampilanGame.mulaiGame();
-        });
 
         pauseButton.setOnClickListener(v -> {
             tampilanGame.pauseGame();

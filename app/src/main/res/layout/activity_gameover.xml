@@ -13,6 +13,41 @@
         android:scaleType="fitXY"
         android:src="@drawable/gameover"/>
 
+    <!-- Text Skor -->
+    <TextView
+        android:id="@+id/tvScore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="340dp"
+        android:gravity="center"
+        android:text="Skor Kamu: 0"
+        android:textColor="#D4D700"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-black"
+        android:shadowColor="#000000"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="3"/>
+
+    <!-- HIGH SCORE -->
+    <TextView
+        android:id="@+id/tvHighScore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:layout_marginTop="375dp"
+        android:gravity="center"
+        android:text="High Score: 0"
+        android:textColor="#D4D700"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-black"
+        android:shadowColor="#000000"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="3"/>
+
     <!-- Tombol ULANGI -->
 
     <Button
