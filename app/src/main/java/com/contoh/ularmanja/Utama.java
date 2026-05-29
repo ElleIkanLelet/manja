@@ -43,6 +43,11 @@ public class Utama extends Activity {
         Button pauseButton = findViewById(R.id.pauseButton);
         Button restartButton = findViewById(R.id.restartButton);
 
+        Button btnUp = findViewById(R.id.btnUp);
+        Button btnDown = findViewById(R.id.btnDown);
+        Button btnLeft = findViewById(R.id.btnLeft);
+        Button btnRight = findViewById(R.id.btnRight);
+
         startButton.setOnClickListener(v -> {
             tampilanGame.mulaiGame();
         });
@@ -53,6 +58,22 @@ public class Utama extends Activity {
 
         restartButton.setOnClickListener(v -> {
             tampilanGame.restartGame();
+        });
+
+        btnUp.setOnClickListener(v -> {
+            tampilanGame.setDirection("UP");
+        });
+
+        btnDown.setOnClickListener(v -> {
+            tampilanGame.setDirection("DOWN");
+        });
+
+        btnLeft.setOnClickListener(v -> {
+            tampilanGame.setDirection("LEFT");
+        });
+
+        btnRight.setOnClickListener(v -> {
+            tampilanGame.setDirection("RIGHT");
         });
     }
 

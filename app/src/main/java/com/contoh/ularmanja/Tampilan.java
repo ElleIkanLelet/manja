@@ -19,6 +19,31 @@ import android.graphics.BitmapFactory;
 
 public class Tampilan extends SurfaceView implements Runnable {
 
+    public void setDirection(String direction) {
+
+        switch (direction) {
+
+            case "UP":
+                if (arahSaatIni != Arah.BAWAH)
+                    arahSaatIni = Arah.ATAS;
+                break;
+
+            case "DOWN":
+                if (arahSaatIni != Arah.ATAS)
+                    arahSaatIni = Arah.BAWAH;
+                break;
+
+            case "LEFT":
+                if (arahSaatIni != Arah.KANAN)
+                    arahSaatIni = Arah.KIRI;
+                break;
+
+            case "RIGHT":
+                if (arahSaatIni != Arah.KIRI)
+                    arahSaatIni = Arah.KANAN;
+                break;
+        }
+    }
     private Thread utas = null;
     private SurfaceHolder wadahPermukaan;
     private volatile boolean sedangBermain;

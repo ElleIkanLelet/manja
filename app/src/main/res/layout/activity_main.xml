@@ -84,4 +84,56 @@
 
     </LinearLayout>
 
+        <!-- CONTROLLER -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <!-- BUTTON ATAS -->
+            <Button
+                android:id="@+id/btnUp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:text="▲"
+                android:textSize="24sp"/>
+
+            <!-- KIRI KANAN -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
+
+                <Button
+                    android:id="@+id/btnLeft"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:text="◀"
+                    android:textSize="24sp"/>
+
+                <Space
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"/>
+
+                <Button
+                    android:id="@+id/btnRight"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:text="▶"
+                    android:textSize="24sp"/>
+            </LinearLayout>
+
+            <!-- BUTTON BAWAH -->
+            <Button
+                android:id="@+id/btnDown"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:text="▼"
+                android:textSize="24sp"
+                android:layout_marginTop="10dp"/>
+
+    </LinearLayout>
+
 </LinearLayout>
