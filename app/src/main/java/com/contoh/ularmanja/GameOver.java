@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.TextView;
+import android.content.SharedPreferences;
+import android.widget.TextView;
 
 public class GameOver extends Activity {
 
@@ -14,6 +17,34 @@ public class GameOver extends Activity {
 
         Button btnUlangi = findViewById(R.id.btnUlangi);
         Button btnKeluar = findViewById(R.id.btnKeluar);
+
+        TextView tvScore = findViewById(R.id.tvScore);
+        TextView tvHighScore = findViewById(R.id.tvHighScore);
+
+        // Ambil skor
+        int score = getIntent().getIntExtra("score", 0);
+
+        // SharedPreferences High Score
+        SharedPreferences dataSimpan =
+                getSharedPreferences("SkorUlar", MODE_PRIVATE);
+
+        int highScore = dataSimpan.getInt("highscore", 0);
+
+        // Update high score kalau score sekarang lebih tinggi
+        if (score > highScore) {
+
+            highScore = score;
+
+            SharedPreferences.Editor editor = dataSimpan.edit();
+            editor.putInt("highscore", highScore);
+            editor.apply();
+        }
+
+        // Tampilkan score
+        tvScore.setText("Skor Kamu: " + score);
+
+        // Tampilkan high score
+        tvHighScore.setText("High Score: " + highScore);
 
         // ULANGI
         btnUlangi.setOnClickListener(v -> {

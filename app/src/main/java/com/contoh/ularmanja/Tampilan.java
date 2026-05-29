@@ -83,6 +83,7 @@ public class Tampilan extends SurfaceView implements Runnable {
     private Bitmap bitmapBatu;
     private Bitmap bitmapKepalaAtas, bitmapKepalaBawah, bitmapKepalaKiri, bitmapKepalaKanan;
     private Bitmap bitmapBadan, bitmapEkor;
+    private Bitmap bitmapApelMerah, bitmapApelEmas;
 
     public Tampilan(Context konteks, TextView scoreView) {
         super(konteks);
@@ -115,6 +116,8 @@ public class Tampilan extends SurfaceView implements Runnable {
         bitmapKepalaKanan = BitmapFactory.decodeResource(getResources(), R.drawable.ular_kepala_kanan);
         bitmapBadan = BitmapFactory.decodeResource(getResources(), R.drawable.ular_badan);
         bitmapEkor = BitmapFactory.decodeResource(getResources(), R.drawable.ular_ekor);
+        bitmapApelMerah = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.apel_merah), 50, 50, true);
+        bitmapApelEmas = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.apel_emas), 50, 50, true);
     }
 
     public void lanjutkan() {
@@ -255,8 +258,15 @@ public class Tampilan extends SurfaceView implements Runnable {
     }
 
     private void akhiriPermainan() {
+
         efekSuara.play(idSuaraTabrak, 1, 1, 0, 0, 1);
-        android.content.Intent intent = new android.content.Intent(getContext(), GameOver.class);
+
+        android.content.Intent intent =
+                new android.content.Intent(getContext(), GameOver.class);
+
+        // Kirim skor ke GameOver
+        intent.putExtra("score", skor);
+
         getContext().startActivity(intent);
     }
 
@@ -301,14 +311,11 @@ public class Tampilan extends SurfaceView implements Runnable {
                     kanvas.drawBitmap(ularResize, p.x * ukuranBlok, p.y * ukuranBlok, null);
                 }
 
-                kuas.setColor(Color.parseColor("#FFD000"));
-                kanvas.drawRect(makanan.x * ukuranBlok, makanan.y * ukuranBlok,
-                        (makanan.x * ukuranBlok) + ukuranBlok, (makanan.y * ukuranBlok) + ukuranBlok, kuas);
+               
+                kanvas.drawBitmap(bitmapApelMerah, makanan.x * ukuranBlok, makanan.y * ukuranBlok, null);
 
                 if (makananBesarAktif) {
-                    kuas.setColor(Color.YELLOW);
-                    kanvas.drawCircle((makananBesar.x * ukuranBlok) + (ukuranBlok / 2),
-                            (makananBesar.y * ukuranBlok) + (ukuranBlok / 2), ukuranBlok / 2, kuas);
+                    kanvas.drawBitmap(bitmapApelEmas, makananBesar.x * ukuranBlok, makananBesar.y * ukuranBlok, null);
                 }
 
             } else {
@@ -340,12 +347,15 @@ public class Tampilan extends SurfaceView implements Runnable {
     public boolean onTouchEvent(MotionEvent peristiwa) {
         switch (peristiwa.getAction()) {
             case MotionEvent.ACTION_DOWN:
+
                 if (statusSekarang != Status.BERMAIN) {
                     mulaiPermainan();
                 }
+
                 sentuhX = peristiwa.getX();
                 sentuhY = peristiwa.getY();
                 break;
+
             case MotionEvent.ACTION_UP:
                 float selisihX = peristiwa.getX() - sentuhX;
                 float selisihY = peristiwa.getY() - sentuhY;
