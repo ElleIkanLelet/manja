@@ -4,9 +4,10 @@
 
     <application
         android:allowBackup="true"
+        android:icon="@drawable/logo"
+        android:roundIcon="@drawable/logo"
         android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        android:theme="@style/Theme.UlarManja">
 
         <activity android:name=".Utama"/>
 

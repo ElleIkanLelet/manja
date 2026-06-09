@@ -2,18 +2,25 @@ package com.contoh.ularmanja;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
-import android.content.SharedPreferences;
-import android.widget.TextView;
 
 public class GameOver extends Activity {
+
+    private MediaPlayer backsound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gameover);
+
+        // Mainkan musik game over
+        backsound = MediaPlayer.create(this, R.raw.tabrak);
+        backsound.setLooping(true);
+        backsound.start();
 
         Button btnUlangi = findViewById(R.id.btnUlangi);
         Button btnKeluar = findViewById(R.id.btnKeluar);
@@ -21,18 +28,14 @@ public class GameOver extends Activity {
         TextView tvScore = findViewById(R.id.tvScore);
         TextView tvHighScore = findViewById(R.id.tvHighScore);
 
-        // Ambil skor
         int score = getIntent().getIntExtra("score", 0);
 
-        // SharedPreferences High Score
         SharedPreferences dataSimpan =
                 getSharedPreferences("SkorUlar", MODE_PRIVATE);
 
         int highScore = dataSimpan.getInt("highscore", 0);
 
-        // Update high score kalau score sekarang lebih tinggi
         if (score > highScore) {
-
             highScore = score;
 
             SharedPreferences.Editor editor = dataSimpan.edit();
@@ -40,32 +43,48 @@ public class GameOver extends Activity {
             editor.apply();
         }
 
-        // Tampilkan score
         tvScore.setText("Skor Kamu: " + score);
-
-        // Tampilkan high score
         tvHighScore.setText("High Score: " + highScore);
 
-        // ULANGI
         btnUlangi.setOnClickListener(v -> {
+            stopLagu();
 
             Intent intent = new Intent(GameOver.this, Utama.class);
             startActivity(intent);
-
             finish();
-
         });
 
-        // KELUAR
         btnKeluar.setOnClickListener(v -> {
+            stopLagu();
 
             Intent intent = new Intent(GameOver.this, Home.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
             startActivity(intent);
-
             finish();
-
         });
+    }
+
+    private void stopLagu() {
+        if (backsound != null) {
+            if (backsound.isPlaying()) {
+                backsound.stop();
+            }
+
+            backsound.release();
+            backsound = null;
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopLagu();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopLagu();
     }
 }

@@ -20,30 +20,24 @@ import android.graphics.BitmapFactory;
 public class Tampilan extends SurfaceView implements Runnable {
 
     public void setDirection(String direction) {
+        if (statusSekarang != Status.BERMAIN) return;
 
         switch (direction) {
-
             case "UP":
-                if (arahSaatIni != Arah.BAWAH)
-                    arahSaatIni = Arah.ATAS;
+                if (arahSaatIni != Arah.BAWAH) arahSaatIni = Arah.ATAS;
                 break;
-
             case "DOWN":
-                if (arahSaatIni != Arah.ATAS)
-                    arahSaatIni = Arah.BAWAH;
+                if (arahSaatIni != Arah.ATAS) arahSaatIni = Arah.BAWAH;
                 break;
-
             case "LEFT":
-                if (arahSaatIni != Arah.KANAN)
-                    arahSaatIni = Arah.KIRI;
+                if (arahSaatIni != Arah.KANAN) arahSaatIni = Arah.KIRI;
                 break;
-
             case "RIGHT":
-                if (arahSaatIni != Arah.KIRI)
-                    arahSaatIni = Arah.KANAN;
+                if (arahSaatIni != Arah.KIRI) arahSaatIni = Arah.KANAN;
                 break;
         }
     }
+
     private Thread utas = null;
     private SurfaceHolder wadahPermukaan;
     private volatile boolean sedangBermain;
@@ -72,7 +66,7 @@ public class Tampilan extends SurfaceView implements Runnable {
     private long waktuMulaiMakananBesar;
     private final long DURASI_MAKANAN_BESAR = 5000;
 
-    private enum Status {MENU, BERMAIN, KALAH}
+    private enum Status {MENU, BERMAIN, PAUSE, KALAH}
     private Status statusSekarang = Status.MENU;
 
     private float sentuhX, sentuhY;
@@ -88,9 +82,11 @@ public class Tampilan extends SurfaceView implements Runnable {
     public Tampilan(Context konteks, TextView scoreView) {
         super(konteks);
         this.teksSkor = scoreView;
+
         setZOrderOnTop(false);
         wadahPermukaan = getHolder();
         kuas = new Paint();
+
         ular = new ArrayList<>();
         rintangan = new ArrayList<>();
 
@@ -101,6 +97,7 @@ public class Tampilan extends SurfaceView implements Runnable {
                 .setUsage(AudioAttributes.USAGE_GAME)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build();
+
         efekSuara = new SoundPool.Builder()
                 .setMaxStreams(5)
                 .setAudioAttributes(atribut)
@@ -116,8 +113,16 @@ public class Tampilan extends SurfaceView implements Runnable {
         bitmapKepalaKanan = BitmapFactory.decodeResource(getResources(), R.drawable.ular_kepala_kanan);
         bitmapBadan = BitmapFactory.decodeResource(getResources(), R.drawable.ular_badan);
         bitmapEkor = BitmapFactory.decodeResource(getResources(), R.drawable.ular_ekor);
-        bitmapApelMerah = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.apel_merah), 50, 50, true);
-        bitmapApelEmas = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.apel_emas), 50, 50, true);
+
+        bitmapApelMerah = Bitmap.createScaledBitmap(
+                BitmapFactory.decodeResource(getResources(), R.drawable.apel_merah),
+                50, 50, true
+        );
+
+        bitmapApelEmas = Bitmap.createScaledBitmap(
+                BitmapFactory.decodeResource(getResources(), R.drawable.apel_emas),
+                50, 50, true
+        );
     }
 
     public void lanjutkan() {
@@ -129,7 +134,9 @@ public class Tampilan extends SurfaceView implements Runnable {
     public void diamkan() {
         sedangBermain = false;
         try {
-            utas.join();
+            if (utas != null) {
+                utas.join();
+            }
         } catch (InterruptedException e) {}
     }
 
@@ -160,6 +167,10 @@ public class Tampilan extends SurfaceView implements Runnable {
         statusSekarang = Status.BERMAIN;
         makananBesarAktif = false;
 
+        teksSkor.post(() -> {
+            teksSkor.setText("SCORE : 0");
+        });
+
         ukuranBlok = layarX / JUMLAH_BLOK_LEBAR;
         jumlahBlokTinggi = layarY / ukuranBlok;
 
@@ -168,8 +179,12 @@ public class Tampilan extends SurfaceView implements Runnable {
 
         rintangan.clear();
         Random acak = new Random();
+
         for (int i = 0; i < 5; i++) {
-            rintangan.add(new Point(acak.nextInt(JUMLAH_BLOK_LEBAR), acak.nextInt(jumlahBlokTinggi)));
+            rintangan.add(new Point(
+                    acak.nextInt(JUMLAH_BLOK_LEBAR),
+                    acak.nextInt(jumlahBlokTinggi)
+            ));
         }
 
         munculkanMakanan();
@@ -177,12 +192,18 @@ public class Tampilan extends SurfaceView implements Runnable {
 
     private void munculkanMakanan() {
         Random acak = new Random();
-        makanan = new Point(acak.nextInt(JUMLAH_BLOK_LEBAR), acak.nextInt(jumlahBlokTinggi));
+        makanan = new Point(
+                acak.nextInt(JUMLAH_BLOK_LEBAR),
+                acak.nextInt(jumlahBlokTinggi)
+        );
     }
 
     private void munculkanMakananBesar() {
         Random acak = new Random();
-        makananBesar = new Point(acak.nextInt(JUMLAH_BLOK_LEBAR), acak.nextInt(jumlahBlokTinggi));
+        makananBesar = new Point(
+                acak.nextInt(JUMLAH_BLOK_LEBAR),
+                acak.nextInt(jumlahBlokTinggi)
+        );
         makananBesarAktif = true;
         waktuMulaiMakananBesar = System.currentTimeMillis();
     }
@@ -194,10 +215,18 @@ public class Tampilan extends SurfaceView implements Runnable {
         float inputY = 0;
 
         switch (arahSaatIni) {
-            case ATAS: inputY = -1; break;
-            case BAWAH: inputY = 1; break;
-            case KIRI: inputX = -1; break;
-            case KANAN: inputX = 1; break;
+            case ATAS:
+                inputY = -1;
+                break;
+            case BAWAH:
+                inputY = 1;
+                break;
+            case KIRI:
+                inputX = -1;
+                break;
+            case KANAN:
+                inputX = 1;
+                break;
         }
 
         Utama aktivitasUtama = (Utama) getContext();
@@ -229,25 +258,39 @@ public class Tampilan extends SurfaceView implements Runnable {
 
         if (kepala.equals(makanan)) {
             skor += 10;
+
             teksSkor.post(() -> {
                 teksSkor.setText("SCORE : " + skor);
             });
+
             efekSuara.play(idSuaraMakan, 1, 1, 0, 0, 1);
             munculkanMakanan();
+
             if (new Random().nextInt(10) > 7 && !makananBesarAktif) {
                 munculkanMakananBesar();
             }
-            if (tunda > 60) tunda -= 3;
+
+            if (tunda > 60) {
+                tunda -= 3;
+            }
+
         } else if (makananBesarAktif && kepala.equals(makananBesar)) {
             skor += 30;
+
             teksSkor.post(() -> {
                 teksSkor.setText("SCORE : " + skor);
             });
+
             efekSuara.play(idSuaraMakan, 1, 1, 0, 0, 1);
             makananBesarAktif = false;
+
             ular.add(new Point(ular.get(ular.size() - 1)));
             ular.add(new Point(ular.get(ular.size() - 1)));
-            if (tunda > 60) tunda -= 7;
+
+            if (tunda > 60) {
+                tunda -= 7;
+            }
+
         } else {
             ular.remove(ular.size() - 1);
         }
@@ -258,15 +301,12 @@ public class Tampilan extends SurfaceView implements Runnable {
     }
 
     private void akhiriPermainan() {
-
-        efekSuara.play(idSuaraTabrak, 1, 1, 0, 0, 1);
+        statusSekarang = Status.KALAH;
 
         android.content.Intent intent =
                 new android.content.Intent(getContext(), GameOver.class);
 
-        // Kirim skor ke GameOver
         intent.putExtra("score", skor);
-
         getContext().startActivity(intent);
     }
 
@@ -274,6 +314,7 @@ public class Tampilan extends SurfaceView implements Runnable {
         if (wadahPermukaan.getSurface().isValid()) {
             kanvas = wadahPermukaan.lockCanvas();
             kanvas.drawColor(Color.parseColor("#050505"));
+
             kuas.setColor(Color.parseColor("#112211"));
 
             for (int x = 0; x < layarX; x += ukuranBlok) {
@@ -284,7 +325,7 @@ public class Tampilan extends SurfaceView implements Runnable {
                 kanvas.drawLine(0, y, layarX, y, kuas);
             }
 
-            if (statusSekarang == Status.BERMAIN) {
+            if (statusSekarang == Status.BERMAIN || statusSekarang == Status.PAUSE) {
                 for (Point p : rintangan) {
                     Bitmap batuResize = Bitmap.createScaledBitmap(bitmapBatu, ukuranBlok, ukuranBlok, false);
                     kanvas.drawBitmap(batuResize, p.x * ukuranBlok, p.y * ukuranBlok, null);
@@ -296,12 +337,19 @@ public class Tampilan extends SurfaceView implements Runnable {
 
                     if (i == 0) {
                         Bitmap kepalaPilihan;
-                        if (arahSaatIni == Arah.BAWAH) kepalaPilihan = bitmapKepalaBawah;
-                        else if (arahSaatIni == Arah.KIRI) kepalaPilihan = bitmapKepalaKiri;
-                        else if (arahSaatIni == Arah.KANAN) kepalaPilihan = bitmapKepalaKanan;
-                        else kepalaPilihan = bitmapKepalaAtas;
+
+                        if (arahSaatIni == Arah.BAWAH) {
+                            kepalaPilihan = bitmapKepalaBawah;
+                        } else if (arahSaatIni == Arah.KIRI) {
+                            kepalaPilihan = bitmapKepalaKiri;
+                        } else if (arahSaatIni == Arah.KANAN) {
+                            kepalaPilihan = bitmapKepalaKanan;
+                        } else {
+                            kepalaPilihan = bitmapKepalaAtas;
+                        }
 
                         ularResize = Bitmap.createScaledBitmap(kepalaPilihan, ukuranBlok, ukuranBlok, false);
+
                     } else if (i == ular.size() - 1) {
                         ularResize = Bitmap.createScaledBitmap(bitmapEkor, ukuranBlok, ukuranBlok, false);
                     } else {
@@ -311,11 +359,20 @@ public class Tampilan extends SurfaceView implements Runnable {
                     kanvas.drawBitmap(ularResize, p.x * ukuranBlok, p.y * ukuranBlok, null);
                 }
 
-               
                 kanvas.drawBitmap(bitmapApelMerah, makanan.x * ukuranBlok, makanan.y * ukuranBlok, null);
 
                 if (makananBesarAktif) {
                     kanvas.drawBitmap(bitmapApelEmas, makananBesar.x * ukuranBlok, makananBesar.y * ukuranBlok, null);
+                }
+
+                if (statusSekarang == Status.PAUSE) {
+                    kuas.setColor(Color.parseColor("#FFD000"));
+                    kuas.setTextSize(100);
+                    kuas.setFakeBoldText(true);
+                    float lebarTeks = kuas.measureText("PAUSED");
+                    float x = (layarX - lebarTeks) / 2;
+
+                    kanvas.drawText("PAUSED", x, layarY / 2, kuas);
                 }
 
             } else {
@@ -347,8 +404,7 @@ public class Tampilan extends SurfaceView implements Runnable {
     public boolean onTouchEvent(MotionEvent peristiwa) {
         switch (peristiwa.getAction()) {
             case MotionEvent.ACTION_DOWN:
-
-                if (statusSekarang != Status.BERMAIN) {
+                if (statusSekarang == Status.MENU || statusSekarang == Status.KALAH) {
                     mulaiPermainan();
                 }
 
@@ -357,18 +413,29 @@ public class Tampilan extends SurfaceView implements Runnable {
                 break;
 
             case MotionEvent.ACTION_UP:
+                if (statusSekarang != Status.BERMAIN) {
+                    return true;
+                }
+
                 float selisihX = peristiwa.getX() - sentuhX;
                 float selisihY = peristiwa.getY() - sentuhY;
 
                 if (Math.abs(selisihX) > Math.abs(selisihY)) {
-                    if (selisihX > 0 && arahSaatIni != Arah.KIRI) arahSaatIni = Arah.KANAN;
-                    else if (selisihX < 0 && arahSaatIni != Arah.KANAN) arahSaatIni = Arah.KIRI;
+                    if (selisihX > 0 && arahSaatIni != Arah.KIRI) {
+                        arahSaatIni = Arah.KANAN;
+                    } else if (selisihX < 0 && arahSaatIni != Arah.KANAN) {
+                        arahSaatIni = Arah.KIRI;
+                    }
                 } else {
-                    if (selisihY > 0 && arahSaatIni != Arah.ATAS) arahSaatIni = Arah.BAWAH;
-                    else if (selisihY < -20 && arahSaatIni != Arah.BAWAH) arahSaatIni = Arah.ATAS;
+                    if (selisihY > 0 && arahSaatIni != Arah.ATAS) {
+                        arahSaatIni = Arah.BAWAH;
+                    } else if (selisihY < -20 && arahSaatIni != Arah.BAWAH) {
+                        arahSaatIni = Arah.ATAS;
+                    }
                 }
                 break;
         }
+
         return true;
     }
 
@@ -377,7 +444,11 @@ public class Tampilan extends SurfaceView implements Runnable {
     }
 
     public void pauseGame() {
-        statusSekarang = Status.MENU;
+        if (statusSekarang == Status.BERMAIN) {
+            statusSekarang = Status.PAUSE;
+        } else if (statusSekarang == Status.PAUSE) {
+            statusSekarang = Status.BERMAIN;
+        }
     }
 
     public void restartGame() {

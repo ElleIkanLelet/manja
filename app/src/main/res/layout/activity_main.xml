@@ -12,7 +12,7 @@
         android:id="@+id/titleText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="SNAKE.EXE"
+        android:text="ULAR MANJA"
         android:textColor="#D4FF00"
         android:textSize="32sp"
         android:textStyle="bold"
@@ -67,11 +67,11 @@
         <Button
             android:id="@+id/pauseButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PAUSE"
-            android:textColor="#000000"
+            android:layout_height="45dp"
+            android:layout_margin="8dp"
             android:backgroundTint="#FFD000"
-            android:layout_margin="8dp"/>
+            android:text="PAUSE"
+            android:textColor="#000000" />
 
         <Button
             android:id="@+id/restartButton"
